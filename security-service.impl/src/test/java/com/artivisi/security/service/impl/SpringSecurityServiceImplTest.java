@@ -32,21 +32,22 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 
-public class VBillingServiceImplTest {
+public class SpringSecurityServiceImplTest {
     private static AbstractApplicationContext applicationContext;
-    private static SpringSecurityService vBillingService;
+    private static SpringSecurityService springSecurityService;
 
     @BeforeClass
     public static void initSpring() throws Exception {
         applicationContext = new ClassPathXmlApplicationContext("classpath*:com/artivisi/**/applicationContext.xml");
         applicationContext.registerShutdownHook();
 
-        vBillingService = (SpringSecurityService) applicationContext.getBean("vBillingService");
+        springSecurityService = (SpringSecurityService) applicationContext.getBean("springSecurityService");
 
 //		clearDatabase();
     }
 
-    private static void clearDatabase() throws SQLException {
+    @SuppressWarnings("unused")
+	private static void clearDatabase() throws SQLException {
         DataSource ds = (DataSource) applicationContext.getBean("dataSource");
         Connection conn = ds.getConnection();
         conn.createStatement().executeUpdate("truncate users");
@@ -65,20 +66,19 @@ public class VBillingServiceImplTest {
     @Test
     public void testHello() {
         Role role = new Role("Super Admin");
-        vBillingService.save(role);
+        springSecurityService.save(role);
 
         Role role2 = new Role("Wakil Admin");
-        vBillingService.save(role2);
+        springSecurityService.save(role2);
 
         Group group = new Group();
-        group.setId(1l);
         group.setName("Super Duper ah");
         List<Role> roles = new ArrayList<Role>();
         roles.add(role);
         roles.add(role2);
         group.setRoles(roles);
 
-        vBillingService.save(group);
+        springSecurityService.save(group);
     }
 
 }
